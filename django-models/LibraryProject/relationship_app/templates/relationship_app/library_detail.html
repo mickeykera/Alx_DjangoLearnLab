@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,8 +12,7 @@
         {% for book in library.books.all %}
         <li>
             {{ book.title }} by {{ book.author.name }}
-            {# If your model uses publication_date instead of publication_year, use the line below #}
-            {# (Published {{ book.publication_date }}) #}
+            (Published {{ book.publication_date|date:"Y"|default:"N/A" }})
         </li>
         {% empty %}
         <li>No books in this library.</li>
