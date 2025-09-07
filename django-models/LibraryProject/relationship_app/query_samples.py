@@ -47,7 +47,17 @@ def query_books_by_author(author_name=None):
     for book in books_by_author:
         print(f"  - {book.title}")
     
-    # Method 3: Get all authors and their books
+    # Method 3: Filter by author object instance
+    try:
+        author = Author.objects.get(name=author_name)
+        books_by_author_instance = Book.objects.filter(author=author)
+        print(f"\nFilter by author instance - Books by {author.name}:")
+        for book in books_by_author_instance:
+            print(f"  - {book.title}")
+    except Author.DoesNotExist:
+        print(f"Author '{author_name}' not found")
+    
+    # Method 4: Get all authors and their books
     print(f"\nAll authors and their books:")
     authors = Author.objects.all()
     for author in authors:
@@ -84,7 +94,17 @@ def query_books_in_library(library_name=None):
     for book in books_in_library:
         print(f"  - {book.title} by {book.author.name}")
     
-    # Method 3: Get all libraries and their books
+    # Method 3: Filter by library object instance
+    try:
+        library = Library.objects.get(name=library_name)
+        books_in_library_instance = Book.objects.filter(libraries=library)
+        print(f"\nFilter by library instance - Books in {library.name}:")
+        for book in books_in_library_instance:
+            print(f"  - {book.title} by {book.author.name}")
+    except Library.DoesNotExist:
+        print(f"Library '{library_name}' not found")
+    
+    # Method 4: Get all libraries and their books
     print(f"\nAll libraries and their books:")
     libraries = Library.objects.all()
     for library in libraries:
@@ -125,7 +145,17 @@ def query_librarian_for_library(library_name=None):
     except Librarian.DoesNotExist:
         print(f"No librarian found for {library_name}")
     
-    # Method 3: Get all libraries and their librarians
+    # Method 3: Filter by library object instance
+    try:
+        library = Library.objects.get(name=library_name)
+        librarian_by_library_instance = Librarian.objects.filter(library=library)
+        print(f"\nFilter by library instance - Librarian for {library.name}:")
+        for librarian in librarian_by_library_instance:
+            print(f"  - {librarian.name}")
+    except Library.DoesNotExist:
+        print(f"Library '{library_name}' not found")
+    
+    # Method 4: Get all libraries and their librarians
     print(f"\nAll libraries and their librarians:")
     libraries = Library.objects.all()
     for library in libraries:
@@ -166,6 +196,16 @@ def additional_relationship_queries():
     print(f"\nLibraries that have books by J.K. Rowling:")
     for library in libraries_with_rowling_books:
         print(f"  - {library.name}")
+    
+    # Filter by author object instance in complex queries
+    try:
+        author = Author.objects.get(name="J.K. Rowling")
+        libraries_with_author_books = Library.objects.filter(books__author=author)
+        print(f"\nLibraries that have books by author instance ({author.name}):")
+        for library in libraries_with_author_books:
+            print(f"  - {library.name}")
+    except Author.DoesNotExist:
+        print("Author 'J.K. Rowling' not found")
     
     # Count queries
     total_books = Book.objects.count()
@@ -255,6 +295,49 @@ def interactive_queries():
         print(f"Author '{author_name}' not found")
 
 
+def object_instance_filtering_examples():
+    """
+    Demonstrate filtering by model object instances
+    """
+    print("\n" + "=" * 60)
+    print("OBJECT INSTANCE FILTERING EXAMPLES")
+    print("=" * 60)
+    
+    # Get an author instance
+    try:
+        author = Author.objects.get(name="J.K. Rowling")
+        print(f"\nUsing author instance: {author}")
+        
+        # Filter books by author instance
+        books_by_author = Book.objects.filter(author=author)
+        print(f"Books filtered by author instance:")
+        for book in books_by_author:
+            print(f"  - {book.title}")
+            
+    except Author.DoesNotExist:
+        print("Author 'J.K. Rowling' not found")
+    
+    # Get a library instance
+    try:
+        library = Library.objects.get(name="Central Library")
+        print(f"\nUsing library instance: {library}")
+        
+        # Filter books by library instance
+        books_in_library = Book.objects.filter(libraries=library)
+        print(f"Books filtered by library instance:")
+        for book in books_in_library:
+            print(f"  - {book.title} by {book.author.name}")
+            
+        # Filter librarian by library instance
+        librarian_for_library = Librarian.objects.filter(library=library)
+        print(f"Librarian filtered by library instance:")
+        for librarian in librarian_for_library:
+            print(f"  - {librarian.name}")
+            
+    except Library.DoesNotExist:
+        print("Library 'Central Library' not found")
+
+
 def main():
     """
     Main function to run all query examples
@@ -271,6 +354,7 @@ def main():
     query_librarian_for_library()
     additional_relationship_queries()
     interactive_queries()
+    object_instance_filtering_examples()
     
     print("\n" + "=" * 60)
     print("QUERY EXAMPLES COMPLETED")
