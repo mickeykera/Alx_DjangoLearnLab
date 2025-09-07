@@ -48,6 +48,11 @@ class Book(models.Model):
         verbose_name = 'Book'
         verbose_name_plural = 'Books'
         unique_together = ['title', 'author']
+        permissions = (
+            ("can_add_book", "Can add book"),
+            ("can_change_book", "Can change book"),
+            ("can_delete_book", "Can delete book"),
+        )
 
 
 class Library(models.Model):
