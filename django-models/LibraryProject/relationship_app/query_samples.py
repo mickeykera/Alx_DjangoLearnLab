@@ -165,6 +165,11 @@ def query_librarian_for_library(library_name=None):
         except Librarian.DoesNotExist:
             print(f"{library.name}: No librarian assigned")
 
+    # Instance-based lookup example
+    library = Library.objects.get(name="Central Library")
+    librarian = Librarian.objects.get(library=library)
+    print(librarian.name)
+
 
 def additional_relationship_queries():
     """
