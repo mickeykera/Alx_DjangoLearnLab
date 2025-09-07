@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
 from django import forms
 from .models import Book, Library, UserProfile
-
+from django.contrib.auth.decorators import permission_required
 class BookForm(forms.ModelForm):
     class Meta:
         model = Book
