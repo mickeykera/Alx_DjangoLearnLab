@@ -5,7 +5,7 @@ from .models import Book, Library
 # Create your views here.
 
 def book_list_text(request):
-    books = Book.objects.select_related('author').order_by('title')
+    books = Book.objects.all().select_related('author').order_by('title')
     return render(request, "relationship_app/list_books.html", {"books": books})
 
 class LibraryDetailView(DetailView):
@@ -15,5 +15,5 @@ class LibraryDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx["books"] = self.object.books.select_related("author").order_by("title")
+        ctx["books"] = self.object.books.all().select_related("author").order_by("title")
         return ctx
