@@ -70,3 +70,9 @@ class Book(models.Model):
         ordering = ['-created_at', 'title']
         verbose_name = "Book"
         verbose_name_plural = "Books"
+        permissions = (
+            ("can_view", "Can view book details"),
+            ("can_create", "Can create new books"),
+            ("can_edit", "Can edit existing books"),
+            ("can_delete", "Can delete books"),
+        )

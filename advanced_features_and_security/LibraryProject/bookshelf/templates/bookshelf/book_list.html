@@ -1,0 +1,83 @@
+{% extends 'bookshelf/base.html' %}
+
+{% block title %}Books - Library Management System{% endblock %}
+
+{% block header %}Books Management{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Book List</h2>
+    {% if can_create %}
+        <a href="{% url 'bookshelf:book_create' %}" class="btn btn-success">Add New Book</a>
+    {% endif %}
+</div>
+
+{% if books %}
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background-color: #f8f9fa;">
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Title</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Author</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Year</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Created</th>
+                    <th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <a href="{% url 'bookshelf:book_detail' book.id %}" style="color: #007bff; text-decoration: none;">
+                            {{ book.title }}
+                        </a>
+                    </td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ book.author }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ book.publication_year }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">{{ book.created_at|date:"M d, Y" }}</td>
+                    <td style="padding: 12px; border: 1px solid #ddd;">
+                        <a href="{% url 'bookshelf:book_detail' book.id %}" class="btn">View</a>
+                        {% if can_edit %}
+                            <a href="{% url 'bookshelf:book_edit' book.id %}" class="btn">Edit</a>
+                        {% endif %}
+                        {% if can_delete %}
+                            <a href="{% url 'bookshelf:book_delete' book.id %}" class="btn btn-danger">Delete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div style="text-align: center; padding: 40px; color: #6c757d;">
+        <h3>No books found</h3>
+        {% if can_create %}
+            <p>Start by <a href="{% url 'bookshelf:book_create' %}">adding your first book</a>!</p>
+        {% else %}
+            <p>You don't have permission to create books.</p>
+        {% endif %}
+    </div>
+{% endif %}
+
+<div style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
+    <h4>Your Permissions:</h4>
+    <p>
+        {% if can_view %}
+            <span class="permission-badge">Can View</span>
+        {% endif %}
+        {% if can_create %}
+            <span class="permission-badge">Can Create</span>
+        {% endif %}
+        {% if can_edit %}
+            <span class="permission-badge">Can Edit</span>
+        {% endif %}
+        {% if can_delete %}
+            <span class="permission-badge">Can Delete</span>
+        {% endif %}
+        {% if not can_view and not can_create and not can_edit and not can_delete %}
+            <span style="color: #dc3545;">No permissions assigned</span>
+        {% endif %}
+    </p>
+</div>
+{% endblock %}

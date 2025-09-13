@@ -1,0 +1,80 @@
+{% extends 'bookshelf/base.html' %}
+
+{% block title %}{{ book.title }} - Library Management System{% endblock %}
+
+{% block header %}{{ book.title }}{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2>{{ book.title }}</h2>
+        <div>
+            {% if can_edit %}
+                <a href="{% url 'bookshelf:book_edit' book.id %}" class="btn">Edit</a>
+            {% endif %}
+            {% if can_delete %}
+                <a href="{% url 'bookshelf:book_delete' book.id %}" class="btn btn-danger">Delete</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+        <div style="padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+            <h3>Book Information</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd; font-weight: bold;">Title:</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">{{ book.title }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd; font-weight: bold;">Author:</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">{{ book.author }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd; font-weight: bold;">Publication Year:</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #ddd;">{{ book.publication_year }}</td>
+                </tr>
+                <tr>
+                    <td style="padding: 10px; font-weight: bold;">Created:</td>
+                    <td style="padding: 10px;">{{ book.created_at|date:"F d, Y H:i" }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div style="padding: 20px; background-color: #f8f9fa; border-radius: 8px;">
+            <h3>Your Permissions</h3>
+            <p>
+                {% if can_edit %}
+                    <span class="permission-badge">Can Edit</span>
+                {% endif %}
+                {% if can_delete %}
+                    <span class="permission-badge">Can Delete</span>
+                {% endif %}
+                {% if not can_edit and not can_delete %}
+                    <span style="color: #6c757d;">Read-only access</span>
+                {% endif %}
+            </p>
+            
+            <h4>Available Actions:</h4>
+            <ul>
+                <li>View book details ✓</li>
+                {% if can_edit %}
+                    <li>Edit book information ✓</li>
+                {% else %}
+                    <li>Edit book information ✗</li>
+                {% endif %}
+                {% if can_delete %}
+                    <li>Delete book ✓</li>
+                {% else %}
+                    <li>Delete book ✗</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    
+    <div style="margin-top: 30px;">
+        <a href="{% url 'bookshelf:book_list' %}" class="btn">Back to Book List</a>
+        <a href="{% url 'bookshelf:user_permissions' %}" class="btn">View My Permissions</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'bookshelf/base.html' %}
+
+{% block title %}{{ title }} - Library Management System{% endblock %}
+
+{% block header %}{{ title }}{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+                <div style="color: #dc3545; font-size: 14px; margin-top: 5px;">
+                    {% for error in form.title.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if form.title.help_text %}
+                <small style="color: #6c757d;">{{ form.title.help_text }}</small>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.author.id_for_label }}">{{ form.author.label }}</label>
+            {{ form.author }}
+            {% if form.author.errors %}
+                <div style="color: #dc3545; font-size: 14px; margin-top: 5px;">
+                    {% for error in form.author.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if form.author.help_text %}
+                <small style="color: #6c757d;">{{ form.author.help_text }}</small>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.publication_year.id_for_label }}">{{ form.publication_year.label }}</label>
+            {{ form.publication_year }}
+            {% if form.publication_year.errors %}
+                <div style="color: #dc3545; font-size: 14px; margin-top: 5px;">
+                    {% for error in form.publication_year.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if form.publication_year.help_text %}
+                <small style="color: #6c757d;">{{ form.publication_year.help_text }}</small>
+            {% endif %}
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <button type="submit" class="btn btn-success">
+                {% if action == 'create' %}Create Book{% else %}Update Book{% endif %}
+            </button>
+            <a href="{% url 'bookshelf:book_list' %}" class="btn">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

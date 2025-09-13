@@ -1,4 +1,5 @@
 from django.db import models
+
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -25,6 +26,12 @@ class Author(models.Model):
         ordering = ['name']
         verbose_name = 'Author'
         verbose_name_plural = 'Authors'
+        permissions = (
+            ("can_view", "Can view author details"),
+            ("can_create", "Can create new authors"),
+            ("can_edit", "Can edit existing authors"),
+            ("can_delete", "Can delete authors"),
+        )
 
 
 class Book(models.Model):
@@ -78,6 +85,12 @@ class Library(models.Model):
         ordering = ['name']
         verbose_name = 'Library'
         verbose_name_plural = 'Libraries'
+        permissions = (
+            ("can_view", "Can view library details"),
+            ("can_create", "Can create new libraries"),
+            ("can_edit", "Can edit existing libraries"),
+            ("can_delete", "Can delete libraries"),
+        )
 
 
 class Librarian(models.Model):
