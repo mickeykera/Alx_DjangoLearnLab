@@ -78,7 +78,6 @@ class BookAdmin(admin.ModelAdmin):
         return form
 
 
-@admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     """
     Custom admin configuration for CustomUser model.
@@ -99,3 +98,6 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('date_of_birth', 'profile_photo')
         }),
     )
+
+# Register the CustomUser model with the admin
+admin.site.register(CustomUser, CustomUserAdmin)
