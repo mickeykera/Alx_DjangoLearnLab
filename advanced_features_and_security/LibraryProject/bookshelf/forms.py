@@ -178,3 +178,131 @@ class ContactForm(forms.Form):
                 raise forms.ValidationError('Message contains invalid content.')
         
         return message
+
+
+class ExampleForm(forms.Form):
+    """
+    Example form demonstrating security best practices.
+    This form shows proper validation, CSRF protection, and input sanitization.
+    """
+    
+    name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your name',
+            'maxlength': '100'
+        }),
+        help_text='Your full name (maximum 100 characters)'
+    )
+    
+    email = forms.EmailField(
+        max_length=254,
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'your.email@example.com',
+            'maxlength': '254'
+        }),
+        help_text='Your email address'
+    )
+    
+    age = forms.IntegerField(
+        min_value=1,
+        max_value=120,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter your age',
+            'min': '1',
+            'max': '120'
+        }),
+        help_text='Your age (1-120)'
+    )
+    
+    bio = forms.CharField(
+        max_length=500,
+        required=False,
+        widget=forms.Textarea(attrs={
+            'class': 'form-control',
+            'placeholder': 'Tell us about yourself...',
+            'rows': 4,
+            'maxlength': '500'
+        }),
+        help_text='Optional biography (maximum 500 characters)'
+    )
+    
+    newsletter = forms.BooleanField(
+        required=False,
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input'
+        }),
+        help_text='Subscribe to our newsletter'
+    )
+    
+    def clean_name(self):
+        """
+        Security: Validate name field with proper sanitization.
+        """
+        name = self.cleaned_data.get('name', '').strip()
+        
+        # Security: Check for minimum length
+        if len(name) < 2:
+            raise forms.ValidationError('Name must be at least 2 characters long.')
+        
+        # Security: Check for valid characters (letters, spaces, hyphens, apostrophes)
+        name_validator = RegexValidator(
+            regex=r'^[a-zA-Z\s\-\']+$',
+            message='Name can only contain letters, spaces, hyphens, and apostrophes.'
+        )
+        name_validator(name)
+        
+        # Security: Check for potentially dangerous content
+        dangerous_patterns = ['<script', 'javascript:', 'onload=', 'onerror=']
+        name_lower = name.lower()
+        for pattern in dangerous_patterns:
+            if pattern in name_lower:
+                raise forms.ValidationError('Name contains invalid content.')
+        
+        return name
+    
+    def clean_bio(self):
+        """
+        Security: Validate bio field with XSS prevention.
+        """
+        bio = self.cleaned_data.get('bio', '').strip()
+        
+        if bio:
+            # Security: Check for potentially dangerous content
+            dangerous_patterns = ['<script', 'javascript:', 'onload=', 'onerror=', 'onclick=']
+            bio_lower = bio.lower()
+            for pattern in dangerous_patterns:
+                if pattern in bio_lower:
+                    raise forms.ValidationError('Bio contains invalid content.')
+            
+            # Security: Check for SQL injection patterns
+            sql_patterns = ['union', 'select', 'insert', 'update', 'delete', 'drop', 'create', 'alter']
+            for pattern in sql_patterns:
+                if pattern in bio_lower:
+                    raise forms.ValidationError('Bio contains invalid content.')
+        
+        return bio
+    
+    def clean(self):
+        """
+        Security: Cross-field validation and additional security checks.
+        """
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        email = cleaned_data.get('email')
+        age = cleaned_data.get('age')
+        
+        # Security: Additional validation logic
+        if name and email:
+            # Check for suspicious patterns in name-email combination
+            if name.lower() in email.lower() and len(name) < 3:
+                raise forms.ValidationError('Name and email combination appears suspicious.')
+        
+        # Security: Age validation
+        if age and age < 13:
+            raise forms.ValidationError('You must be at least 13 years old to use this service.')
+        
+        return cleaned_data
