@@ -23,9 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-5z=8!w^clp1t^84!=d9$sr(d4ka(t%euk+%6!e0k0+%#*t_rqa"
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# Set to False in production for security
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Security: Configure allowed hosts for production
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', 'testserver']
 
 
 # Application definition
@@ -43,12 +45,14 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "bookshelf.middleware.SecurityLoggingMiddleware",  # Custom security logging
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "bookshelf.middleware.SecurityHeadersMiddleware",  # Custom security headers
 ]
 
 ROOT_URLCONF = "LibraryProject.urls"
@@ -132,3 +136,173 @@ AUTH_USER_MODEL = 'bookshelf.CustomUser'
 
 LOGIN_REDIRECT_URL = "member_view"
 LOGOUT_REDIRECT_URL = "login"
+
+# =============================================================================
+# SECURITY CONFIGURATIONS
+# =============================================================================
+
+# Security: HTTPS and SSL Settings
+# In production, set these to True when using HTTPS
+SECURE_SSL_REDIRECT = False  # Set to True in production with HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Security: Cookie Security
+# Ensure cookies are only sent over HTTPS in production
+CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+CSRF_COOKIE_HTTPONLY = True  # Prevent JavaScript access to CSRF cookie
+SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to session cookie
+CSRF_COOKIE_SAMESITE = 'Lax'  # CSRF cookie SameSite attribute
+SESSION_COOKIE_SAMESITE = 'Lax'  # Session cookie SameSite attribute
+
+# Security: Browser Security Headers
+SECURE_BROWSER_XSS_FILTER = True  # Enable XSS filtering in browsers
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME type sniffing
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking attacks
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0  # HTTP Strict Transport Security
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+# Security: Content Security Policy (CSP)
+# Define which sources are allowed for different types of content
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'")  # Allow inline scripts for Django admin
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'")  # Allow inline styles for Django admin
+CSP_IMG_SRC = ("'self'", "data:", "https:")
+CSP_FONT_SRC = ("'self'",)
+CSP_CONNECT_SRC = ("'self'",)
+CSP_FRAME_ANCESTORS = ("'none'",)  # Prevent embedding in frames
+CSP_BASE_URI = ("'self'",)
+CSP_OBJECT_SRC = ("'none'",)
+
+# Security: Additional Security Headers
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'
+
+# Security: Password Security
+# Enhanced password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {
+            "min_length": 8,  # Minimum 8 characters
+        }
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
+]
+
+# Security: Session Security
+SESSION_COOKIE_AGE = 3600  # 1 hour session timeout
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Expire session when browser closes
+SESSION_SAVE_EVERY_REQUEST = True  # Save session on every request
+
+# Security: CSRF Protection
+CSRF_COOKIE_AGE = 31449600  # 1 year CSRF cookie age
+CSRF_USE_SESSIONS = False  # Use cookies for CSRF tokens
+CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
+
+# Security: File Upload Security
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB max file size
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB max data upload
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 1000  # Max number of form fields
+
+# Security: Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs' / 'security.log',
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'django.security': {
+            'handlers': ['file', 'console'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['file', 'console'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+    },
+}
+
+# Security: Database Security
+# Use environment variables for database credentials in production
+DATABASES['default']['OPTIONS'] = {
+    'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+}
+
+# Security: Email Security (for production)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Console backend for development
+# In production, use:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'your-smtp-server.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'your-email@example.com'
+# EMAIL_HOST_PASSWORD = 'your-password'
+
+# Security: Cache Security
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000,
+            'CULL_FREQUENCY': 3,
+        }
+    }
+}
+
+# Security: Static Files Security
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+# Security: Media Files Security
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
+
+# Security: Admin Security
+ADMIN_URL = 'admin/'  # Custom admin URL to hide default admin path
+
+# Security: Development vs Production Settings
+if DEBUG:
+    # Development-specific security settings
+    INTERNAL_IPS = ['127.0.0.1', 'localhost']
+else:
+    # Production-specific security settings
+    SECURE_SSL_REDIRECT = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
