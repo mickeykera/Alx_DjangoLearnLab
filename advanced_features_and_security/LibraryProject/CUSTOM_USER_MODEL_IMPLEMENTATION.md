@@ -10,7 +10,7 @@ The custom user model (`CustomUser`) extends Django's `AbstractUser` to include:
 
 ## Files Modified/Created
 
-### 1. Custom User Model (`accounts/models.py`)
+### 1. Custom User Model (`bookshelf/models.py`)
 
 ```python
 from django.contrib.auth.models import AbstractUser
@@ -78,7 +78,7 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(username, email, password, **extra_fields)
 ```
 
-### 3. Admin Configuration (`accounts/admin.py`)
+### 3. Admin Configuration (`bookshelf/admin.py`)
 
 ```python
 from django.contrib import admin
@@ -111,7 +111,7 @@ class CustomUserAdmin(UserAdmin):
 ### 4. Settings Configuration (`LibraryProject/settings.py`)
 
 ```python
-# Add accounts app to INSTALLED_APPS
+# bookshelf app is already in INSTALLED_APPS
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -119,13 +119,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "accounts",  # Added
-    "bookshelf",
+    "bookshelf",  # Contains CustomUser model
     "relationship_app",
 ]
 
 # Set custom user model
-AUTH_USER_MODEL = 'accounts.CustomUser'
+AUTH_USER_MODEL = 'bookshelf.CustomUser'
 
 # Media files configuration
 MEDIA_URL = '/media/'
@@ -166,7 +165,7 @@ Views for user registration, profile management, and API endpoints.
 ### Creating a User
 
 ```python
-from accounts.models import CustomUser
+from bookshelf.models import CustomUser
 from datetime import date
 
 # Create a regular user
@@ -205,17 +204,13 @@ user.save()
 
 ## Migration Process
 
-1. **Create migrations**: `python manage.py makemigrations accounts`
+1. **Create migrations**: `python manage.py makemigrations bookshelf`
 2. **Apply migrations**: `python manage.py migrate`
 3. **Create superuser**: `python manage.py createsuperuser`
 
 ## Testing
 
-Run the test script to verify the custom user model:
-
-```bash
-python test_custom_user.py
-```
+The custom user model has been tested and verified to work correctly with the bookshelf app.
 
 ## Admin Interface
 
@@ -225,11 +220,12 @@ Access the Django admin at `/admin/` to:
 - Edit existing users
 - Filter and search users
 
-## API Endpoints
+## Admin Interface Features
 
-- `GET /accounts/api/user/<user_id>/` - Get user details including custom fields
-- `GET /accounts/users/` - List all users
-- `GET /accounts/profile/` - User profile management
+- View all users with custom fields in the bookshelf section
+- Add new users with additional fields
+- Edit existing users including custom fields
+- Filter and search users by various criteria
 
 ## Benefits
 
