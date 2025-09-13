@@ -15,6 +15,7 @@ urlpatterns = [
     path('secure-search/', views.secure_search_view, name='secure_search'),
     path('secure-contact/', views.secure_contact_view, name='secure_contact'),
     path('secure-create/', views.secure_book_create_view, name='secure_book_create'),
+    path('example-form/', views.example_form_view, name='example_form'),
     
     # API endpoints
     path('api/book/<int:book_id>/', views.book_api_view, name='book_api'),

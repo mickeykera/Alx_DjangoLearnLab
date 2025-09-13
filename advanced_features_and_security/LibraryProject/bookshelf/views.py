@@ -320,3 +320,44 @@ def secure_book_create_view(request):
         'action': 'create'
     }
     return render(request, 'bookshelf/book_form.html', context)
+
+
+@login_required
+@csrf_protect
+def example_form_view(request):
+    """
+    Example form view demonstrating security best practices.
+    Shows proper form handling, validation, and security measures.
+    """
+    if request.method == 'POST':
+        form = ExampleForm(request.POST)
+        
+        if form.is_valid():
+            # Security: Get cleaned data from form (already validated and sanitized)
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            age = form.cleaned_data['age']
+            bio = form.cleaned_data.get('bio', '')
+            newsletter = form.cleaned_data.get('newsletter', False)
+            
+            # Security: Log form submission
+            logger.info(f'Example form submitted by {request.user.username}: {name} ({email}), age: {age}')
+            
+            # Security: In a real application, you would save this data to the database
+            # For demonstration, we'll just show a success message
+            messages.success(request, f'Thank you {name}! Your information has been received successfully.')
+            
+            # Security: Redirect to prevent duplicate submissions
+            return redirect('bookshelf:example_form')
+        else:
+            # Security: Log form validation errors
+            logger.warning(f'Example form validation failed for user {request.user.username}: {form.errors}')
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = ExampleForm()
+    
+    context = {
+        'form': form,
+        'user': request.user,
+    }
+    return render(request, 'bookshelf/form_example.html', context)

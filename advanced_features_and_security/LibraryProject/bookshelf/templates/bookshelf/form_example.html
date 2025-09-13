@@ -1,0 +1,201 @@
+{% extends 'bookshelf/base.html' %}
+
+{% block title %}Example Form - Library Management System{% endblock %}
+
+{% block header %}Example Form with Security Features{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+    <div style="padding: 20px; background-color: #f8f9fa; border-radius: 8px; margin-bottom: 20px;">
+        <h3>Security Features Demonstrated:</h3>
+        <ul>
+            <li><strong>CSRF Protection:</strong> Form includes CSRF token</li>
+            <li><strong>Input Validation:</strong> Server-side validation of all inputs</li>
+            <li><strong>XSS Prevention:</strong> All user input is properly escaped</li>
+            <li><strong>SQL Injection Prevention:</strong> Form validation blocks dangerous patterns</li>
+            <li><strong>Cross-field Validation:</strong> Validates relationships between fields</li>
+        </ul>
+    </div>
+    
+    <!-- Example Form with CSRF Protection -->
+    <form method="post" action="{% url 'bookshelf:example_form' %}" style="background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        {% csrf_token %}
+        
+        <h3 style="color: #333; margin-bottom: 20px;">User Information Form</h3>
+        
+        <!-- Name Field -->
+        <div style="margin-bottom: 20px;">
+            <label for="{{ form.name.id_for_label }}" style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">
+                {{ form.name.label }} <span style="color: red;">*</span>
+            </label>
+            {{ form.name }}
+            {% if form.name.help_text %}
+                <small style="color: #666; font-size: 0.9em;">{{ form.name.help_text }}</small>
+            {% endif %}
+            {% if form.name.errors %}
+                <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+                    {% for error in form.name.errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Email Field -->
+        <div style="margin-bottom: 20px;">
+            <label for="{{ form.email.id_for_label }}" style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">
+                {{ form.email.label }} <span style="color: red;">*</span>
+            </label>
+            {{ form.email }}
+            {% if form.email.help_text %}
+                <small style="color: #666; font-size: 0.9em;">{{ form.email.help_text }}</small>
+            {% endif %}
+            {% if form.email.errors %}
+                <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+                    {% for error in form.email.errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Age Field -->
+        <div style="margin-bottom: 20px;">
+            <label for="{{ form.age.id_for_label }}" style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">
+                {{ form.age.label }} <span style="color: red;">*</span>
+            </label>
+            {{ form.age }}
+            {% if form.age.help_text %}
+                <small style="color: #666; font-size: 0.9em;">{{ form.age.help_text }}</small>
+            {% endif %}
+            {% if form.age.errors %}
+                <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+                    {% for error in form.age.errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Bio Field -->
+        <div style="margin-bottom: 20px;">
+            <label for="{{ form.bio.id_for_label }}" style="display: block; margin-bottom: 5px; font-weight: bold; color: #555;">
+                {{ form.bio.label }}
+            </label>
+            {{ form.bio }}
+            {% if form.bio.help_text %}
+                <small style="color: #666; font-size: 0.9em;">{{ form.bio.help_text }}</small>
+            {% endif %}
+            {% if form.bio.errors %}
+                <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+                    {% for error in form.bio.errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Newsletter Field -->
+        <div style="margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                {{ form.newsletter }}
+                <label for="{{ form.newsletter.id_for_label }}" style="font-weight: bold; color: #555; margin: 0;">
+                    {{ form.newsletter.label }}
+                </label>
+            </div>
+            {% if form.newsletter.help_text %}
+                <small style="color: #666; font-size: 0.9em; margin-top: 5px; display: block;">{{ form.newsletter.help_text }}</small>
+            {% endif %}
+            {% if form.newsletter.errors %}
+                <div style="color: red; font-size: 0.9em; margin-top: 5px;">
+                    {% for error in form.newsletter.errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Form Errors (Non-field errors) -->
+        {% if form.non_field_errors %}
+            <div style="background-color: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 20px;">
+                <strong>Form Errors:</strong>
+                {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <!-- Submit Button -->
+        <div style="text-align: center; margin-top: 30px;">
+            <button type="submit" 
+                    style="padding: 12px 30px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold;">
+                Submit Form
+            </button>
+        </div>
+    </form>
+    
+    <!-- Security Information -->
+    <div style="margin-top: 30px; padding: 20px; background-color: #d1ecf1; border: 1px solid #bee5eb; border-radius: 8px;">
+        <h4>Security Measures in This Form:</h4>
+        <ul>
+            <li><strong>CSRF Token:</strong> {% csrf_token %} prevents Cross-Site Request Forgery attacks</li>
+            <li><strong>Input Validation:</strong> HTML5 validation attributes (required, maxlength, min, max)</li>
+            <li><strong>Server-side Validation:</strong> Django forms provide additional validation</li>
+            <li><strong>XSS Prevention:</strong> Django automatically escapes template variables</li>
+            <li><strong>SQL Injection Prevention:</strong> Form validation blocks dangerous patterns</li>
+            <li><strong>Cross-field Validation:</strong> Validates relationships between form fields</li>
+        </ul>
+    </div>
+    
+    <!-- Form Testing Instructions -->
+    <div style="margin-top: 20px; padding: 20px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px;">
+        <h4>Test Security Features:</h4>
+        <p><strong>Try these inputs to test validation:</strong></p>
+        <ul>
+            <li><strong>Name:</strong> Try "A" (too short), "John123" (contains numbers), or "&lt;script&gt;alert('XSS')&lt;/script&gt;" (XSS attempt)</li>
+            <li><strong>Email:</strong> Try "invalid-email" or "test@" (invalid format)</li>
+            <li><strong>Age:</strong> Try "0" or "150" (out of range)</li>
+            <li><strong>Bio:</strong> Try "&lt;script&gt;alert('XSS')&lt;/script&gt;" or "SELECT * FROM users" (XSS/SQL injection)</li>
+        </ul>
+        <p><em>All malicious inputs should be blocked by the form validation!</em></p>
+    </div>
+</div>
+
+<style>
+/* Additional styling for form elements */
+input[type="text"], 
+input[type="email"], 
+input[type="number"], 
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus, 
+input[type="email"]:focus, 
+input[type="number"]:focus, 
+textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+button[type="submit"]:active {
+    background-color: #004085;
+}
+</style>
+{% endblock %}
