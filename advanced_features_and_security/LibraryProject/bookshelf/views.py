@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.utils.html import escape
 import logging
 from .models import Book
-from .forms import BookForm, SecureSearchForm, ContactForm
+from .forms import BookForm, SecureSearchForm, ContactForm, ExampleForm
 
 # Security: Set up logging for security events
 logger = logging.getLogger('django.security')
