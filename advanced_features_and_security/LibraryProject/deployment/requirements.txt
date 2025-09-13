@@ -1,0 +1,50 @@
+# Production Requirements for Django HTTPS Deployment
+# This file contains all the Python packages needed for production deployment
+
+# Django and core dependencies
+Django==5.2.5
+djangorestframework==3.14.0
+
+# Database
+psycopg2-binary==2.9.7
+
+# WSGI Server
+gunicorn==21.2.0
+
+# Security
+django-cors-headers==4.3.1
+django-ratelimit==4.1.0
+
+# Environment management
+python-decouple==3.8
+
+# Logging and monitoring
+sentry-sdk==1.38.0
+
+# Static files
+whitenoise==6.6.0
+
+# Caching
+redis==5.0.1
+django-redis==5.4.0
+
+# Email
+django-anymail==10.1
+
+# File handling
+Pillow==10.1.0
+
+# Development and testing (optional for production)
+# pytest==7.4.3
+# pytest-django==4.7.0
+# coverage==7.3.2
+
+# SSL/TLS support
+cryptography==41.0.7
+
+# Performance monitoring
+django-debug-toolbar==4.2.0  # Only for development
+
+# Additional security packages
+django-security==0.20.0
+django-axes==6.1.1  # For login attempt monitoring

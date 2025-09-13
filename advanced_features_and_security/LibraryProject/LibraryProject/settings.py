@@ -142,26 +142,43 @@ LOGOUT_REDIRECT_URL = "login"
 # =============================================================================
 
 # Security: HTTPS and SSL Settings
-# In production, set these to True when using HTTPS
-SECURE_SSL_REDIRECT = False  # Set to True in production with HTTPS
+# Configure for production HTTPS deployment
+SECURE_SSL_REDIRECT = True  # Redirect all HTTP requests to HTTPS
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+# Security: HTTP Strict Transport Security (HSTS)
+# Instruct browsers to only access the site via HTTPS
+SECURE_HSTS_SECONDS = 31536000  # 1 year (31536000 seconds)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Include all subdomains in HSTS policy
+SECURE_HSTS_PRELOAD = True  # Allow HSTS preloading in browsers
+
+# Security: Additional HTTPS settings
+SECURE_REDIRECT_EXEMPT = []  # URLs that should not be redirected to HTTPS
+SECURE_SSL_HOST = None  # Custom SSL host (if different from ALLOWED_HOSTS)
+
 # Security: Cookie Security
-# Ensure cookies are only sent over HTTPS in production
-CSRF_COOKIE_SECURE = False  # Set to True in production with HTTPS
-SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+# Enforce secure cookies for HTTPS connections
+CSRF_COOKIE_SECURE = True  # CSRF cookies only sent over HTTPS
+SESSION_COOKIE_SECURE = True  # Session cookies only sent over HTTPS
 CSRF_COOKIE_HTTPONLY = True  # Prevent JavaScript access to CSRF cookie
 SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to session cookie
-CSRF_COOKIE_SAMESITE = 'Lax'  # CSRF cookie SameSite attribute
-SESSION_COOKIE_SAMESITE = 'Lax'  # Session cookie SameSite attribute
+CSRF_COOKIE_SAMESITE = 'Strict'  # CSRF cookie SameSite attribute (Strict for better security)
+SESSION_COOKIE_SAMESITE = 'Strict'  # Session cookie SameSite attribute (Strict for better security)
+
+# Security: Additional cookie settings
+CSRF_COOKIE_AGE = 31449600  # 1 year CSRF cookie age
+CSRF_USE_SESSIONS = False  # Use cookies for CSRF tokens (not sessions)
+CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
 
 # Security: Browser Security Headers
-SECURE_BROWSER_XSS_FILTER = True  # Enable XSS filtering in browsers
-SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME type sniffing
-X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking attacks
-SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0  # HTTP Strict Transport Security
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
+# Prevent various types of attacks through HTTP headers
+SECURE_BROWSER_XSS_FILTER = True  # Enable browser's XSS filtering
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME type sniffing attacks
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking attacks (DENY is most secure)
+
+# Security: Additional security headers
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'  # Control referrer information
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'  # Prevent cross-origin attacks
 
 # Security: Content Security Policy (CSP)
 # Define which sources are allowed for different types of content
@@ -298,11 +315,25 @@ ADMIN_URL = 'admin/'  # Custom admin URL to hide default admin path
 if DEBUG:
     # Development-specific security settings
     INTERNAL_IPS = ['127.0.0.1', 'localhost']
+    
+    # For development, we can relax some HTTPS settings if needed
+    # Uncomment the following lines if you need to test without HTTPS in development
+    # SECURE_SSL_REDIRECT = False
+    # CSRF_COOKIE_SECURE = False
+    # SESSION_COOKIE_SECURE = False
+    # SECURE_HSTS_SECONDS = 0
 else:
     # Production-specific security settings
+    # These settings are already configured above for production use
+    # Additional production-only settings can be added here
+    
+    # Ensure all security settings are enforced in production
     SECURE_SSL_REDIRECT = True
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
+    
+    # Production-specific logging
+    LOGGING['handlers']['file']['filename'] = BASE_DIR / 'logs' / 'production.log'
