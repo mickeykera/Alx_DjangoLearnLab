@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Area</title>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+    <p>Welcome, {{ request.user.username }}. You are viewing the Admin area.</p>
+    <p>Your role: {{ role }}</p>
+    <p><a href="{% url 'logout' %}">Logout</a></p>
+</body>
+</html>
