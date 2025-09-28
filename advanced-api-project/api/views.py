@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, filters
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -17,6 +17,11 @@ class BookListView(generics.ListCreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [AllowAny]  # Allow read access to everyone
+    # Enable filtering, searching, and ordering
+    filterset_fields = ["title", "publication_year", "author"]
+    search_fields = ["title", "author__name"]
+    ordering_fields = ["title", "publication_year", "id"]
+    ordering = ["title"]
     
     def get_permissions(self):
         """
