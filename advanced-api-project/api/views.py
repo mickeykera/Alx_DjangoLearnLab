@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from .models import Author, Book
 from .serializers import AuthorSerializer, BookSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework
 class BookListView(generics.ListCreateAPIView):
     """
@@ -18,6 +19,7 @@ class BookListView(generics.ListCreateAPIView):
     serializer_class = BookSerializer
     permission_classes = [AllowAny]  # Allow read access to everyone
     # Enable filtering, searching, and ordering
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ["title", "publication_year", "author"]
     search_fields = ["title", "author__name"]
     ordering_fields = ["title", "publication_year", "id"]
