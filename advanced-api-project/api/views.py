@@ -68,6 +68,52 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
         instance.delete()
 
 
+# Explicit single-responsibility generic views for Book CRUD operations
+class BookCreateView(generics.CreateAPIView):
+    """
+    CreateView dedicated to creating a new book.
+    
+    POST /books/create/ - Create a new book (requires authentication)
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+    def get_permissions(self):
+        # Write operation requires authentication
+        return [IsAuthenticated()]
+
+
+class BookUpdateView(generics.UpdateAPIView):
+    """
+    UpdateView dedicated to updating an existing book.
+    
+    PUT/PATCH /books/<id>/update/ - Update a book (requires authentication)
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+    def get_permissions(self):
+        # Write operation requires authentication
+        return [IsAuthenticated()]
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+
+class BookDeleteView(generics.DestroyAPIView):
+    """
+    DeleteView dedicated to deleting an existing book.
+    
+    DELETE /books/<id>/delete/ - Delete a book (requires authentication)
+    """
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+    def get_permissions(self):
+        # Write operation requires authentication
+        return [IsAuthenticated()]
+
+
 class AuthorListView(generics.ListCreateAPIView):
     """
     Generic view for listing all authors and creating new authors.
