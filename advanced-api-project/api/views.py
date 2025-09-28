@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.shortcuts import get_object_or_404
 from .models import Author, Book
 from .serializers import AuthorSerializer, BookSerializer
-
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 class BookListView(generics.ListCreateAPIView):
     """
