@@ -68,7 +68,7 @@ class BookAPITests(APITestCase):
         self.assertIn(response.status_code, [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN])
 
     def test_create_book_authenticated(self):
-        self.client.force_authenticate(user=self.user)
+        self.client.login(username="testuser", password="password123")
         payload = {
             "title": "The Hobbit",
             "publication_year": 1937,
@@ -85,7 +85,7 @@ class BookAPITests(APITestCase):
         self.assertIn(response.status_code, [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN])
 
     def test_update_book_authenticated(self):
-        self.client.force_authenticate(user=self.user)
+        self.client.login(username="testuser", password="password123")
         payload = {"title": "Harry Potter and the Sorcerer's Stone"}
         response = self.client.patch(self.book_update_url(self.book_hp1.id), payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -98,7 +98,7 @@ class BookAPITests(APITestCase):
         self.assertIn(response.status_code, [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN])
 
     def test_delete_book_authenticated(self):
-        self.client.force_authenticate(user=self.user)
+        self.client.login(username="testuser", password="password123")
         response = self.client.delete(self.book_delete_url(self.book_hp2.id))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Book.objects.filter(id=self.book_hp2.id).exists())
