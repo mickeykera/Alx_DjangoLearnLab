@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from .models import Author, Book
 from .serializers import AuthorSerializer, BookSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-
+from django_filters import rest_framework
 class BookListView(generics.ListCreateAPIView):
     """
     Generic view for listing all books and creating new books.
