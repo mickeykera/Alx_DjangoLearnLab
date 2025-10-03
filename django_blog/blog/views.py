@@ -1,3 +1,5 @@
+from django.views.generic import ListView
+from .models import Post
 from taggit.models import Tag
 class PostByTagListView(ListView):
     model = Post
