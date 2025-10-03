@@ -1,3 +1,20 @@
+from taggit.models import Tag
+class PostByTagListView(ListView):
+    model = Post
+    context_object_name = "posts"
+    template_name = "blog/post_list.html"
+
+    def get_queryset(self):
+        tag_slug = self.kwargs.get("tag_slug")
+        self.tag = Tag.objects.filter(slug=tag_slug).first()
+        if self.tag:
+            return Post.objects.filter(tags__slug=tag_slug).order_by("-published_date")
+        return Post.objects.none()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["tag"] = getattr(self, "tag", None)
+        return context
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
