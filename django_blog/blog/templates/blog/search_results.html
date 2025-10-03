@@ -4,24 +4,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Posts</title>
+  <title>Search Results</title>
   <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
 </head>
 <body>
-  <header>
-    <h1>All Posts</h1>
-    {% if user.is_authenticated %}
-      <p><a href="{% url 'post-create' %}">New Post</a> | <a href="{% url 'profile' %}">Profile</a></p>
-    {% else %}
-      <p><a href="{% url 'login' %}">Login</a></p>
-    {% endif %}
-  </header>
-  <main>
-    <form method="get" action="{% url 'search' %}" style="margin-bottom: 24px;">
-      <input type="text" name="q" placeholder="Search posts..." value="{{ request.GET.q }}" />
-      <button type="submit">Search</button>
-    </form>
-    {% if posts %}
+  <h1>Search Results for "{{ query }}"</h1>
+  <p><a href="{% url 'post-list' %}">← Back to all posts</a></p>
+  {% if posts %}
     <ul>
       {% for post in posts %}
         <li>
@@ -39,11 +28,8 @@
         </li>
       {% endfor %}
     </ul>
-    {% else %}
-      <p>No posts yet.</p>
-    {% endif %}
-  </main>
+  {% else %}
+    <p>No posts found.</p>
+  {% endif %}
 </body>
 </html>
-
-

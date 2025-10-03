@@ -4,8 +4,23 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.db.models import Q
 from .models import Post, Comment
 from .forms import RegistrationForm, ProfileForm, PostForm, CommentForm
+def posts_by_tag(request, tag_name):
+    posts = Post.objects.filter(tags__name__iexact=tag_name).order_by("-published_date")
+    return render(request, "blog/post_list.html", {"posts": posts, "tag_name": tag_name})
+
+def search(request):
+    query = request.GET.get("q", "")
+    posts = Post.objects.all()
+    if query:
+        posts = posts.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct().order_by("-published_date")
+    return render(request, "blog/post_list.html", {"posts": posts, "query": query})
 
 
 def home(request):

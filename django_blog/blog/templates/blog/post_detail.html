@@ -14,6 +14,14 @@
   <article>
     {{ object.content|linebreaks }}
   </article>
+  {% if object.tags.exists %}
+    <div>
+      Tags:
+      {% for tag in object.tags.all %}
+        <a href="{% url 'posts-by-tag' tag.name %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
 
   {% if user == object.author %}
     <p>

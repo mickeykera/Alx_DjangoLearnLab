@@ -13,6 +13,7 @@
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    <small>Enter tags separated by commas (e.g. travel, python, web)</small>
     <button type="submit">Save</button>
   </form>
 </body>

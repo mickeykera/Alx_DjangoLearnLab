@@ -9,6 +9,9 @@ urlpatterns = [
     path("logout/", auth_views.LogoutView.as_view(template_name="registration/logout.html"), name="logout"),
     path("register/", views.register, name="register"),
     path("profile/", views.profile, name="profile"),
+    # Tag and search
+    path("tags/<str:tag_name>/", views.posts_by_tag, name="posts-by-tag"),
+    path("search/", views.search, name="search"),
     # CRUD for posts
     path("posts/", views.PostListView.as_view(), name="post-list"),
     path("posts/new/", views.PostCreateView.as_view(), name="post-create"),
