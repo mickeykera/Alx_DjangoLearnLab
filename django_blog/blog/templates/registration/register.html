@@ -6,15 +6,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Register</title>
   <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'blog/css/register.css' %}">
 </head>
 <body>
+  <div class="auth-container">
   <h1>Create an account</h1>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Register</button>
   </form>
-  <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+  <p class="auth-actions">Already have an account? <a href="{% url 'login' %}">Login</a></p>
+  </div>
 </body>
 </html>
 

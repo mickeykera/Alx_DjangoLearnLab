@@ -6,8 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login</title>
   <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'blog/css/login.css' %}">
 </head>
 <body>
+  <div class="auth-container">
   <h1>Login</h1>
   {% if form.errors %}
     <p>Invalid credentials, please try again.</p>
@@ -17,7 +19,8 @@
     {{ form.as_p }}
     <button type="submit">Login</button>
   </form>
-  <p>Don’t have an account? <a href="{% url 'register' %}">Register</a></p>
+  <p class="auth-actions">Don’t have an account? <a href="{% url 'register' %}">Register</a></p>
+  </div>
 </body>
 </html>
 

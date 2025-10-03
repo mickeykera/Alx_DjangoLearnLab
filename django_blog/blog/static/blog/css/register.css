@@ -1,0 +1,15 @@
+/* Page-specific styles for the register page */
+.auth-container {
+  max-width: 480px;
+  margin: 40px auto;
+}
+
+.auth-actions {
+  margin-top: 12px;
+}
+
+.auth-actions a {
+  text-decoration: none;
+}
+
+
