@@ -1,0 +1,15 @@
+/* Page-specific styles for the login page */
+.auth-container {
+  max-width: 420px;
+  margin: 40px auto;
+}
+
+.auth-actions {
+  margin-top: 12px;
+}
+
+.auth-actions a {
+  text-decoration: none;
+}
+
+
