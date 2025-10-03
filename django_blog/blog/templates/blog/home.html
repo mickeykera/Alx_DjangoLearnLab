@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog Home</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Django Blog</h1>
+    </header>
+    <main>
+        {% if posts %}
+            <ul>
+                {% for post in posts %}
+                    <li>
+                        <h2>{{ post.title }}</h2>
+                        <p>By {{ post.author.username }} on {{ post.published_date }}</p>
+                        <div>
+                            {{ post.content }}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No posts yet.</p>
+        {% endif %}
+    </main>
+    <script src="{% static 'blog/js/app.js' %}"></script>
+</body>
+</html>
+
+
