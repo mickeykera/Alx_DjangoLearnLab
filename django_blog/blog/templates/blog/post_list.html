@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Posts</title>
+  <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
+</head>
+<body>
+  <header>
+    <h1>All Posts</h1>
+    {% if user.is_authenticated %}
+      <p><a href="{% url 'post-create' %}">New Post</a> | <a href="{% url 'profile' %}">Profile</a></p>
+    {% else %}
+      <p><a href="{% url 'login' %}">Login</a></p>
+    {% endif %}
+  </header>
+  <main>
+    {% if posts %}
+    <ul>
+      {% for post in posts %}
+        <li>
+          <a href="{% url 'post-detail' post.pk %}"><strong>{{ post.title }}</strong></a>
+          <p>By {{ post.author.username }} on {{ post.published_date }}</p>
+          <div>{{ post.content|truncatechars:160 }}</div>
+        </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+      <p>No posts yet.</p>
+    {% endif %}
+  </main>
+</body>
+</html>
+
+

@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ object.title }}</title>
+  <link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
+</head>
+<body>
+  <p><a href="{% url 'post-list' %}">← Back to all posts</a></p>
+  <h1>{{ object.title }}</h1>
+  <p>By {{ object.author.username }} on {{ object.published_date }}</p>
+  <article>
+    {{ object.content|linebreaks }}
+  </article>
+
+  {% if user == object.author %}
+    <p>
+      <a href="{% url 'post-update' object.pk %}">Edit</a>
+      |
+      <a href="{% url 'post-delete' object.pk %}">Delete</a>
+    </p>
+  {% endif %}
+</body>
+</html>
+
+
