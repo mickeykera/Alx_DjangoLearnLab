@@ -62,6 +62,17 @@ Permissions:
 - Only authenticated users can create posts.
 - Only the author can edit or delete their posts.
 
+## Comments
+- Comments appear on the post detail page below the content.
+- Add a comment on a post detail page (logged in): form posts to `/posts/<post_id>/comments/new/`.
+- Edit your comment: `/comments/<id>/edit/`.
+- Delete your comment: `/comments/<id>/delete/` (confirmation page).
+
+Permissions:
+- Anyone can read comments.
+- Only authenticated users can add comments.
+- Only the comment author can edit or delete their comment.
+
 ## Notes
 - Static warning: If you see a warning about `STATICFILES_DIRS` path not existing, create the folder `django_blog/static/` or remove it from settings.
 - Passwords are stored using Django’s built-in password hashing.
