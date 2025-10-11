@@ -34,3 +34,18 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+
+from rest_framework.generics import ListAPIView
+
+
+class FeedView(ListAPIView):
+    serializer_class = PostSerializer
+    pagination_class = StandardResultsSetPagination
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        # users the current user is following
+        following_qs = user.following.all()
+        return Post.objects.filter(author__in=following_qs).order_by("-created_at")
