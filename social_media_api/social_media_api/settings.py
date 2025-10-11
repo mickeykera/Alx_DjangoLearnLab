@@ -9,6 +9,9 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", get_random_secret_key())
 DEBUG = False
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost 127.0.0.1").split()
 
+# Port for local/server run (useful for Procfile or runtime introspection)
+PORT = int(os.environ.get("PORT", "8000"))
+
 # Application definition
 INSTALLED_APPS = [
     "django.contrib.admin",
