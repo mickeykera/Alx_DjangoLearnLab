@@ -37,6 +37,13 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 
 from rest_framework.generics import ListAPIView
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.shortcuts import get_object_or_404
+
+from .models import Like
+from notifications.models import Notification
 
 
 class FeedView(ListAPIView):
@@ -49,3 +56,32 @@ class FeedView(ListAPIView):
         # users the current user is following
         following_users = user.following.all()
         return Post.objects.filter(author__in=following_users).order_by("-created_at")
+
+
+
+class LikePostView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        # prevent double-like
+        like, created = Like.objects.get_or_create(post=post, user=request.user)
+        if not created:
+            return Response({"detail": "Already liked."}, status=status.HTTP_400_BAD_REQUEST)
+        # create notification for post author
+        if post.author != request.user:
+            Notification.objects.create(recipient=post.author, actor=request.user, verb="liked", target=post)
+        return Response({"detail": "Post liked."})
+
+
+class UnlikePostView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        try:
+            like = Like.objects.get(post=post, user=request.user)
+            like.delete()
+        except Like.DoesNotExist:
+            return Response({"detail": "Not liked."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "Post unliked."})
