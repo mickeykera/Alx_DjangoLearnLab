@@ -23,7 +23,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Use the model manager's create_user to ensure password handling and any custom logic
         password = validated_data.pop("password")
-        user = User.objects.create_user(password=password, **validated_data)
+        user = get_user_model().objects.create_user(password=password, **validated_data)
         # create token for the user
         Token.objects.create(user=user)
         return user
